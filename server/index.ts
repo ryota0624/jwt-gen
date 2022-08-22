@@ -19,12 +19,18 @@ export function decode<O extends object>(token: string): O {
 
 //TODO: フロントエンドでは...payload入れるところ -> jwtに変換 -> headerに付与 -> lambda@edgeに送りつけ -> edgeでpayload検証
 
-exports.handler = (event: any, context: any, callback: any) => {
+export const handler = (event: any, context: any, callback: any) => {
     const request = event.Records[0].cf.request;
+    if (!request.uri.match("^\/hls-5s\/")) {
+        callback(null, request);
+        return
+    }
+
     const headers = request.headers;
-    if (headers.authorization &&
-        headers.authorization.split(' ')[0] === 'Bearer') {
-        const token = headers.authorization.split(' ')[1];
+    console.log(headers)
+    if (headers.authorization.length > 0 &&
+        headers.authorization[0].value.split(' ')[0] === 'Bearer') {
+        const token = headers.authorization[0].value.split(' ')[1];
         const payload = decode<{"secret": string}>(token)
         if (payload.secret === "HIMITSU") {
             callback(null, request);
