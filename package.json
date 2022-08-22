@@ -6,7 +6,7 @@
   "scripts": {
     "build-client": "esbuild client/index.tsx --outfile=client/dist/index.js --bundle --minify --target=chrome58",
     "build-server": "esbuild server/index.ts --outfile=server/dist/index.js --bundle --minify --platform=node --target=node14",
-    "zip": "zip deploy/lambda.zip server/dist/index.js",
+    "zip": "cd server/dist && zip ../../deploy/lambda.zip index.js",
     "test": "vitest"
   },
   "keywords": [],
